@@ -65,21 +65,66 @@ The page supports analysis of sales trends, order performance, and business resu
 
 ## 🧮 Example DAX Measures
 
+The following measures are implemented in the Power BI report to analyze e-commerce performance. Sales and profit calculations exclude cancelled orders.
+
 ### Total Sales
+
+Calculates discounted sales revenue for non-cancelled orders.
 
 ```dax
 Total Sales =
-SUMX(
-    order_items,
-    order_items[quantity] *
-    RELATED(products[list_price]) *
-    (1 - order_items[discount_pct])
+CALCULATE(
+    SUMX(
+        'ecommerce_bi360 order_items',
+        'ecommerce_bi360 order_items'[quantity]
+            * RELATED('ecommerce_bi360 products'[list_price])
+            * (1 - 'ecommerce_bi360 order_items'[discount_pct])
+    ),
+    'ecommerce_bi360 orders'[order_status] <> "Cancelled"
 )
 ```
 
-**Important:** Verify that `unit_cost` represents the selling price before using this formula as Total Sales. If it is the product cost, replace it with the appropriate selling-price column, such as `list_price`, and account for discounts.
+### Gross Profit
+
+Calculates profit after product costs and item-level discounts for non-cancelled orders.
+
+```dax
+Gross Profit =
+CALCULATE(
+    SUMX(
+        'ecommerce_bi360 order_items',
+        'ecommerce_bi360 order_items'[quantity]
+            * (
+                RELATED('ecommerce_bi360 products'[list_price])
+                    * (1 - 'ecommerce_bi360 order_items'[discount_pct])
+                - RELATED('ecommerce_bi360 products'[unit_cost])
+            )
+    ),
+    'ecommerce_bi360 orders'[order_status] <> "Cancelled"
+)
+```
+
+### Average Order Value (AOV)
+
+Calculates average sales revenue per non-cancelled order using the distinct order count.
+
+```dax
+Average Order Value =
+DIVIDE(
+    [Total Sales],
+    CALCULATE(
+        DISTINCTCOUNT(
+            'ecommerce_bi360 orders'[order_id]
+        ),
+        'ecommerce_bi360 orders'[order_status] <> "Cancelled"
+    ),
+    0
+)
+```
 
 ### Profit Margin %
+
+Calculates gross profit as a percentage of total sales.
 
 ```dax
 Profit Margin % =
@@ -90,15 +135,9 @@ DIVIDE(
 )
 ```
 
-### Average Order Value
+**Business rule:** Cancelled orders are excluded from these measures. Returned orders are included unless their status is also `Cancelled`; returned-order treatment may be refined depending on the reporting requirements.
 
-```dax
-Average Order Value =
-DIVIDE(
-    [Total Sales],
-    [Total Orders],
-    0
-)
+
 ```
 
 ## 🔍 Key Business Insights
