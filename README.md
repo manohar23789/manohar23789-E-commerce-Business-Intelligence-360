@@ -132,5 +132,11 @@ The dashboard is designed to help users:
 ## 👨‍💻 Project Purpose
 
 This project is part of my data analytics portfolio, demonstrating how SQL and Power BI can be combined to transform transactional data into meaningful business insights.
-
 I am continuing to develop my skills in data analytics, business intelligence, and Power BI development.
+
+👤 Author
+
+**Manohar Kuttuboina**
+Aspiring Power BI Developer | Data Analytics Portfolio
+
+This project was developed for learning and portfolio demonstration using synthetic sample data.
