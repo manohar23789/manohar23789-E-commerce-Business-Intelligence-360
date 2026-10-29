@@ -137,6 +137,7 @@ I am continuing to develop my skills in data analytics, business intelligence, a
 👤 Author
 
 **Manohar Kuttuboina**
+
 Aspiring Power BI Developer | Data Analytics Portfolio
 
 This project was developed for learning and portfolio demonstration using synthetic sample data.
