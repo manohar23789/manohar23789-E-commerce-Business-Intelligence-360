@@ -72,7 +72,8 @@ Total Sales =
 SUMX(
     order_items,
     order_items[quantity] *
-    order_items[unit_cost]
+    RELATED(products[list_price]) *
+    (1 - order_items[discount_pct])
 )
 ```
 
